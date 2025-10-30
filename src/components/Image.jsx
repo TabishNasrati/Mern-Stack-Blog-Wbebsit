@@ -1,6 +1,7 @@
 import { Image } from '@imagekit/react';
 
-const ImageComp = ({src, className, width, height, alt}) => {
+
+const ImageComp = ({src, className, width="800", height="800", alt}) => {
 
     const urlEndpoint= import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT
 
@@ -13,8 +14,8 @@ const ImageComp = ({src, className, width, height, alt}) => {
         width={width}
         height={height}
         alt={alt}
-        transformation={[{ width: 500, height: 500 }]}
         lqip={{active :true, quality:20}}
+    
         />
     )
 }

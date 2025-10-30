@@ -8,7 +8,8 @@ const FeaturedPost = () => {
            {/* First */}
            <div className="w-full lg:w-1/2 flex flex-col gap-4">
         {/* image */}
-        <ImageComp src="featured1.jpeg" className="rounded-3xl object-cover  top-3 left-3  right-3 bottom-3 "  />
+        <div className="w-auto h-auto">
+        <ImageComp src="featured1.jpeg" className="rounded-3xl object-cover  w-full h-full top-3 left-3  right-3 bottom-3 "  /></div>
         {/* details */}
         <div className="flex items-center gap-4">
             <h1 className=" font-semibold lg:text-lg ">01.</h1>
@@ -21,13 +22,15 @@ const FeaturedPost = () => {
         </Link>
            </div>
            {/* Other post */}
-           <div className="w-full lg:w-1/2 flex flex-col gap-4">
+           <div className=" w-full  lg:w-1/2  flex flex-col gap-4">
             {/* second */}
-            <div className="lg:h-1/3 flex justify-between gap-4">
+            <div className=" lg:h-1/3  flex justify-between gap-4">
+              <div className="w-1/3 aspect-video">
                 <ImageComp 
                 src="featured2.jpeg" 
-                 className="rounded-3xl object-cover w-1/3  aspect-video "
+                 className="rounded-3xl  object-cover w-full h-full " width="298"
                  />
+                 </div>
                  {/* detaild and title */} 
                  <div className="w-2/3">
                    {/* detals */}
@@ -46,10 +49,12 @@ const FeaturedPost = () => {
             </div>
             {/* third */}
             <div className="lg:h-1/3 flex justify-between gap-4">
+            <div className="w-1/3 aspect-video">
                 <ImageComp 
-                src="featured2.jpeg" 
-                 className="rounded-3xl object-cover w-1/3  aspect-video "
+                src="featured3.jpeg" 
+                 className="rounded-3xl  object-cover w-full h-full " width="298"
                  />
+                 </div>
                  {/* detaild and title */} 
                  <div className="w-2/3">
                    {/* detals */}
@@ -68,10 +73,12 @@ const FeaturedPost = () => {
             </div>
             {/* fourt */}
             <div className="lg:h-1/3 flex justify-between gap-4">
+            <div className="w-1/3 aspect-video">
                 <ImageComp 
-                src="featured2.jpeg" 
-                 className="rounded-3xl object-cover w-1/3  aspect-video "
+                src="featured4.jpeg" 
+                 className="rounded-3xl  object-cover w-full h-full " width="298"
                  />
+                 </div>
                  {/* detaild and title */} 
                  <div className="w-2/3">
                    {/* detals */}
