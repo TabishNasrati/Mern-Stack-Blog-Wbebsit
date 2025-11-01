@@ -2,10 +2,11 @@ import { Link } from "react-router-dom"
 import ImageComp from "../components/Image"
 import PostMenuActions from "../components/PostMenuActions"
 import Search from "../components/Search"
+import Comments from "../components/Comments"
 
 const SinglePostPage = () => {
     return (
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8  ">
         {/* detail */}
         <div className="flex gap-8">
             <div className=" lg:w-3/5 flex flex-col gap-8 ">
@@ -33,7 +34,7 @@ const SinglePostPage = () => {
             </div>
         </div>
           {/* content */}
-          <div className="flex flex-col md:flex-row gap-8">
+          <div className="flex flex-col md:flex-row gap-12">
             {/* text */}
             <div className="lg:text-lg flex flex-col gap-6 text-justify">
               
@@ -187,11 +188,13 @@ const SinglePostPage = () => {
             </div>
              {/* Menue */}
              <div className="px-4 sticky top-8 self-start">
-                <h1 className="mt-8 mb-4 text-sm font-medium">Author</h1>
-                <div className="">
+                <h1 className=" mb-4 text-sm font-medium">Author</h1>
+                <div className="flex flex-col gap-4"> 
+                <div className="flex items-center gap-8">
                     <ImageComp  src="userImg.jpeg" className="w-12 h-12 rounded-full object-cover" width="48" height="48" />
-                    <Link>John Doe</Link>
-                    <p>  magni cum nam, maiores natus laudantium odio .</p>
+                    <Link className="text-blue-800" >John Doe</Link>
+                    </div>
+                    <p className="text-sm text-gray-500">  magni cum nam, maiores natus laudantium odio .</p>
                     <div className="flex gap-2">
                         <Link>
                         <ImageComp src="facebook.svg"  className="w-5 h-5"  />
@@ -199,8 +202,9 @@ const SinglePostPage = () => {
                         <Link>
                         <ImageComp src="instagram.svg" className="w-5 h-5" />
                         </Link>
+                        </div>
                     </div>
-                </div>
+                
                 <PostMenuActions />
                 <h1 className="mt-8 mb-4 text-sm font-medium">Catagories</h1>
                 <div className="flex flex-col gap-2 text-sm">
@@ -215,6 +219,7 @@ const SinglePostPage = () => {
                 <Search />
              </div>
           </div>
+          <Comments /> 
       </div>
             
     )
