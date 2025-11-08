@@ -32,7 +32,7 @@ const postSchema = new Schema ({
      },
 
     isFeatured: {
-        type: Boolean,
+        type: Number,
         default:false,
     },
 
