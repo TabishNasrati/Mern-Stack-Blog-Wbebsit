@@ -29,15 +29,16 @@ const postSchema = new Schema ({
 
      content: {
         type: String,
+        required:true,
      },
 
     isFeatured: {
-        type: Number,
+        type: Boolean,
         default:false,
     },
 
     visit: {
-        type: Boolean,
+        type: Number ,
         default: 0,
     },
 

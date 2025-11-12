@@ -3,17 +3,26 @@ import mongoose from "mongoose"
 
 
 const userSchema = new Schema ({
-      img: {
-        type: String,
-    },
-      title: {
+  
+       clerUserkId: {
+        type:String,
+        required:true,
+        unique:true,
+       },
+
+      username: {
         type: String,
         required:true,
+        unique : true
     },
-      slug: {
+      email: {
         type: String,
         required: true,
         unique: true,
+    },
+
+        img: {
+        type: String,
     },
     savedPosts: {
         type:[String],

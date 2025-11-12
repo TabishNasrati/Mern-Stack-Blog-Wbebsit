@@ -30,9 +30,6 @@ export const createPost = async (req,res)=> {
 
 
 export const  deletePost = async (req,res)=> {
-   
-    
-
     const post = await Post.findByIdAndDelete(req.params.id);
     res.status(200).json("Post has been deleted");
 };
