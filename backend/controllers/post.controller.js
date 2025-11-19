@@ -1,5 +1,6 @@
 import express from "express";
 import Post from "../models/post.model.js";
+import User from "../models/user.model.js";
 
 
 
@@ -19,8 +20,19 @@ export const getPost = async (req,res)=> {
 
 
 export const createPost = async (req,res)=> {
-    const newPost = new Post (req.body);
-    console.log(newPost, "this is new post")
+    const clerkUserId = req.auth.userId;
+
+    if (!clerkUserId){
+        return res.status(401).json("not authenticated!")
+    }
+
+    const user = await User.findOne ({clerkUserId});
+    if (!user) {
+        return res.status(404).json("User not found!")
+    }
+
+    const newPost = new Post ({user: user._id, ...req.body});
+    // console.log(newPost, "this is new post")
 
     const post = await newPost.save();
     res.status(200).json(post);
@@ -30,7 +42,19 @@ export const createPost = async (req,res)=> {
 
 
 export const  deletePost = async (req,res)=> {
-    const post = await Post.findByIdAndDelete(req.params.id);
+  const clerkUserId = req.auth.userId;
+
+
+  if(!clerkUserId) {
+    return res.status(401).json("Not authenticated!");
+  }
+
+    const user = await User.findOne ({ clerkUserId });
+
+    const post = await Post.findByIdAndDelete({
+        _id: req.params.id, 
+        user:user._id
+     });
     res.status(200).json("Post has been deleted");
 };
 
