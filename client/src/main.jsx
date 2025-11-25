@@ -2,11 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 // import App from './App.jsx'
-
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import HomePage from './routes/Homepage';
 import PostListPage from './routes/PostListPage';
 import Write from './routes/Write';
@@ -15,6 +11,12 @@ import RegisterPage from './routes/RegisterPage';
 import SinglePostPage from './routes/SinglePostPage';
 import MainLayout from './layouts/MainLayout';
 import { ClerkProvider } from '@clerk/clerk-react';
+import { QueryClient, QueryClientProvider, useQuery,} from '@tanstack/react-query'
+import { ToastContainer, toast } from 'react-toastify';
+
+const queryClient = new QueryClient()
+
+
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -70,7 +72,10 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
      
      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <QueryClientProvider  client={queryClient} >
         <RouterProvider router={router} />
+        <ToastContainer position="bottom-right" />
+        </QueryClientProvider>
      </ClerkProvider>
   </StrictMode>,
 );
