@@ -7,7 +7,8 @@ import webhookRouter from "./routes/webhook.route.js";
 import dotenv from "dotenv";
 import { clerkMiddleware, requireAuth } from '@clerk/express';
 import cors from "cors";
-
+import commentRoutes from "./routes/comment.route.js";
+// import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
  dotenv.config();
 
 
@@ -17,8 +18,13 @@ import cors from "cors";
 
  app.use(cors(process.env.CLIENT_URL));
  app.use(clerkMiddleware());
-app.use("/webhooks", webhookRouter);
+ 
+ app.use("/webhooks", express.raw({ type: "application/json" }), webhookRouter);
+
  app.use(express.json());
+//  app.use(ClerkExpressRequireAuth());
+//  app.use("/api", commentRoutes);
+
 
 
  app.use(function(req, res, next) {
@@ -58,7 +64,7 @@ app.get("/auth-state", (req,res) => {
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
-
+app.use("/api", commentRoutes);
 
 
 app.use((error,req,res,next) => {

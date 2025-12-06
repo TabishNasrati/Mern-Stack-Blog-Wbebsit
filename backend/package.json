@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.23",
     "@clerk/express": "^1.7.50",
     "@imagekit/react": "^5.0.1",
     "body-parser": "^2.2.0",
@@ -18,6 +19,7 @@
     "express": "^5.1.0",
     "imagekit": "^6.0.0",
     "mongoose": "^8.19.2",
+    "react-scroll": "^1.9.3",
     "react-toastify": "^11.0.5",
     "svix": "^1.81.0"
   }

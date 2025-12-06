@@ -10,14 +10,28 @@ dotenv.config();
 
 
 export const getPosts = async (req,res)=> {
-    const posts = await Post.find ();
-    res.status(200).json(posts);
+
+  const page = parseInt (req.query.page) || 1;
+  const limit = parseInt (req.query.limit) || 2;
+
+    const posts = await Post.find()
+    .populate("user", "username")
+    .limit(limit)
+    .skip((page - 1) * limit);
+      
+    const totalPosts = await Post.countDocuments();
+    const hasMore = (page * limit) < totalPosts;
+
+    res.status(200).json({ posts,hasMore });
 };
 
 
 
 export const getPost = async (req,res)=> {
-    const post = await Post.findOne({slug:req.params.slug});
+    const post = await Post.findOne({ slug:req.params.slug }).populate(
+      "user", 
+      "username img"
+      );
     res.status(200).json(post);
 };
 
@@ -25,22 +39,24 @@ export const getPost = async (req,res)=> {
 
 
 export const createPost = async (req,res)=> {
-    const clerkUserId = req.auth.userId;
-    console.log(clerkUserId, "thish is ")
+    const {userId} = req.auth();
+    const clerUserkId = userId;
+    console.log(clerUserkId, "this is clerk user id")
+    console.log(userId, "user id")
    
   console.log(req.body, "thish is new post from body")
 
-    if (!clerkUserId){
+    if (!clerUserkId){
         return res.status(401).json("not authenticated!")
     }
 
-    const user = await User.findOne ({clerkUserId});
+    const user = await User.findOne ({clerUserkId});
 
     console.log(user, "this is user id")
 
-    // if (!user) {
-    //     return res.status(404).json("User not found!")
-    // }
+    if (!user) {
+        return res.status(404).json("User not found!")
+    }
 
     let slug = req.body.title.replace(/ /g ,"-").toLowerCase();
 
@@ -54,7 +70,7 @@ export const createPost = async (req,res)=> {
         counter++;
     }
 
-    const newPost = new Post ({ slug, ...req.body});
+    const newPost = new Post ({ slug, user: user, ...req.body});
     const post = await newPost.save();
     res.status(200).json(post);
 };
@@ -63,15 +79,15 @@ export const createPost = async (req,res)=> {
 
 
 export const  deletePost = async (req,res)=> {
-  const clerkUserId = req.auth.userId;
+  const clerUserId = req.auth.userId;
 
 
 
-  if(!clerkUserId) {
+  if(!clerUserId) {
     return res.status(401).json("Not authenticated!");
   }
 
-    const user = await User.findOne ({ clerkUserId });
+    const user = await User.findOne ({ clerUserId });
 
     const deletedPost = await Post.findByIdAndDelete({
         _id: req.params.id, 

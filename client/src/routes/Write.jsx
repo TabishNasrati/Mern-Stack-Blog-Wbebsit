@@ -3,40 +3,40 @@ import 'react-quill-new/dist/quill.snow.css';
 import ReactQuill from "react-quill-new"
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {IKContext, IKUpload} from "imagekitio-react";
-
-
-const authenticator = async () => {
-  try {
-      // Perform the request to the upload authentication endpoint.
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/upload-auth`);
-      if (!response.ok) {
-          // If the server response is not successful, extract the error text for debugging.
-          const errorText = await response.text();
-          throw new Error(`Request failed with status ${response.status}: ${errorText}`);
-      }
-
-      // Parse and destructure the response JSON for upload credentials.
-      const data = await response.json();
-      const { signature, expire, token, publicKey } = data;
-      return { signature, expire, token, publicKey };
-  } catch (error) {
-      // Log the original error for debugging before rethrowing a new error.
-      console.error("Authentication error:", error);
-      throw new Error("Authentication request failed");
-  }
-};
+import Upload from "../components/Upload";
 
 
 const Write = () => {
 
-    const {isLoaded, isSignedIn} = useUser () 
-    const [value, setValue] = useState('');
-    const [cover, setCover ] = useState ("")
-    const [progress ,  setProgress ] = useState ("")
+    const {isLoaded, isSignedIn} = useUser () ;
+    const [value, setValue] = useState("");
+    const [cover, setCover ] = useState ("");
+    const [img, setImg ] = useState ("");
+    const [video, setVideo ] = useState ("");
+    const [progress , setProgress] = useState (0);
+
+
+
+
+     
+    useEffect (() => {
+      if (img) {
+      setValue(prev => prev + `<p><img src="${img.url}" /></p>`);
+      }
+    },[img] );
+
+
+    
+    useEffect(() => {
+      if (video) {
+        setValue(prev => prev + `<p><iframe class="ql-video" src="${video.url}"></iframe></p>`);
+      }
+    }, [video]);
+    
+
 
 
     const navigate = useNavigate();
@@ -52,7 +52,8 @@ const Write = () => {
  const mutation = useMutation({
         mutationFn: async (newPost) => {
           console.log(newPost,"this new post")
-            const token = await getToken ();
+          const token = await getToken();
+          console.log(token, "this is token of user ")
           return axios.post(`${api}/posts`, newPost, {
             headers:{
                 Authorization: `Bearer ${token}`
@@ -62,7 +63,6 @@ const Write = () => {
          
         onSuccess: (res) => {
           toast.success("Post has been created")
-          // navigate(`${res.data.slug}`)
           navigate("/my-story")   
         }
 
@@ -81,7 +81,9 @@ const Write = () => {
         e.preventDefault();
         const formData = new FormData(e.target)
         console.log(formData,"this post payload")
+
        const data = {
+        img:cover.filePath || "",
          title:formData.get("title"),
          category:formData.get("category"),
          desc:formData.get("desc"),
@@ -96,26 +98,12 @@ const Write = () => {
 
       }; 
 
-      const onError = (err) => {
-        console.log (err) ;
-        toast.error("Image upload faild!")
-      };
-
-      const onSuccess = (res) => {
-        console.log (res) ;
-        toast.error("Image upload faild!")
-      };
-
-
-      const onUploadProgress = (progress) => {
-        console.log (progress) ;
-        setCover (res);
-      };
      
-      const ouUploadProgress = ( progress ) => {
-        console.log(progress);
-        setProgress (Math.round(progress.loaded/progress.total) * 100);
-      }
+     
+      // const ouUploadProgress = ( progress ) => {
+      //   console.log(progress);
+      //   setProgress (Math.round(progress.loaded/progress.total) * 100);
+      // }
      
    
     return (
@@ -123,27 +111,11 @@ const Write = () => {
             <h1 className="text-clip font-light" >Create a New Post</h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6  flex-1 mb-6">
 
-                {/* <button className=" w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white">Add a cover image</button> */}
+                    <Upload type="image" setProgress={setProgress}  setData={setCover}>
 
-                <IKContext
-                 publicKey={import.meta.env.VITE_IK_PUBLIC_KEY} 
-                 urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT}
-                 
-                  authenticator={authenticator}
-                  
-                   
-                   >
-                      
-                    <IKUpload 
-                    // fileName="test-upload.png"
-                    useUniqueFileName
-                    onError={onError}
-                    onSuccess={onSuccess}
-                    onUploadProgress={onUploadProgress}
-                    />
+                <button className=" w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white">Add a cover image</button>
 
-                   </IKContext>
-
+                </Upload>
                    
 
                 <input className="text-4xl font-semibold bg-transparent outline-none" type="text" placeholder="My Awesome Story " name="title" />
@@ -160,19 +132,29 @@ const Write = () => {
                 </div>
                 <textarea className="p-4 rounded-xl bg-white shadow-md" name="desc" placeholder="A Short Description " />
  
-                  <div className="flex">
+                  <div className="flex flex-1 ">
                     <div className="flex flex-col gap-2 mr-2">
-                      <div className="cursor-pointer">🌅</div>
-                      <div className="cursor-pointer">▶️</div>
+                         
+                    <Upload type="image" setProgress={setProgress}  setData={setImg}>🌅</Upload>
+                      {/* <div className="cursor-pointer">🌅</div> */}
+                      {/* <div className="cursor-pointer">▶️</div> */}
+                      <Upload type="video" setProgress={setProgress}  setData={setVideo}>▶️</Upload>
                     </div>
 
-                <ReactQuill theme="snow" className="flex-1  rounded-xl bg-white shadow-md" value={value} onChange={setValue} />
+                <ReactQuill
+                 theme="snow" 
+                 className="flex-1  rounded-xl bg-white shadow-md"
+                  value={value} 
+                  onChange={setValue}
+                   readOnly={(0 < progress && progress < 100 )}
+                    />
                  </div>
-                <button disabled={mutation.isPending || (0 < progress && progress < 100 ) }
+                <button 
+                disabled={mutation.isPending || (0 < progress && progress < 100 ) }
                  className="bg-blue-800 text-white font-medium rounded-xl mt-4 p-2 w-36   disabled:bg-blue-400 disabled:cursor-not-allowed">
                    {mutation.isPending ? "Loading..." : "Send" }
                   </button>
-                  {"Progress: + progress "}
+                  {"Progress:" + progress }
                   {mutation.isError && <span> {mutation.error.message} </span>}
             </form>
         </div>
