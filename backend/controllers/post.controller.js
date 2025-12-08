@@ -40,17 +40,17 @@ export const getPost = async (req,res)=> {
 
 export const createPost = async (req,res)=> {
     const {userId} = req.auth();
-    const clerUserkId = userId;
-    console.log(clerUserkId, "this is clerk user id")
+    const clerkUserkId = userId;
+    console.log(clerkUserkId, "this is clerk user id")
     console.log(userId, "user id")
    
   console.log(req.body, "thish is new post from body")
 
-    if (!clerUserkId){
+    if (!clerkUserkId){
         return res.status(401).json("not authenticated!")
     }
 
-    const user = await User.findOne ({clerUserkId});
+    const user = await User.findOne ({clerkUserkId});
 
     console.log(user, "this is user id")
 
@@ -79,15 +79,20 @@ export const createPost = async (req,res)=> {
 
 
 export const  deletePost = async (req,res)=> {
-  const clerUserId = req.auth.userId;
+  const clerkUserId = req.auth.userId;
 
+ const role = req.auth.sessionClaims?.metadata?.role || "user";
+ 
+ if (role === "admin") {
+  await Post.findByIdAndDelete (req.params.id);
+  return res.status(200).json("Post has been deleted");
+ }
 
-
-  if(!clerUserId) {
+  if(!clerkUserId) {
     return res.status(401).json("Not authenticated!");
   }
 
-    const user = await User.findOne ({ clerUserId });
+    const user = await User.findOne ({ clerkUserId });
 
     const deletedPost = await Post.findByIdAndDelete({
         _id: req.params.id, 

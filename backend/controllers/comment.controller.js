@@ -1,7 +1,6 @@
 import Comment from "../models/comment.model.js";  
 import User from "../models/user.model.js";
-// import { useAuth,auth } from "@clerk/clerk-react";
-import clerUserkId from "@clerk/clerk-sdk-node"
+
 
 
 
@@ -23,16 +22,16 @@ export const getPostComments = async (req, res) => {
 
 export const  addComment = async (req,res) => {
     const {userId} = req.auth();
-    const clerUserkId = userId;
-    console.log(clerUserkId, "this is clerk user id")
+    const clerkUserId = userId;
+    console.log(clerkUserId, "this is clerk user id")
     const postId = req.params.postId
-    console.log(postId, "this is post id")
-    console.log(req.body, "this is body")
-    if(!clerUserkId){
+   
+    if(!clerkUserId){
         return res.status(401).json("Not authenticated!")
     }
 
-    const user = await User.findOne({ clerUserkId });
+    const user = await User.findOne({ clerkUserId });
+    console.log(user._id, "this is user for createing comment" )
 
      
     const newComment = new Comment ({
@@ -54,18 +53,32 @@ export const  addComment = async (req,res) => {
 };
 
 export const  deleteComment = async (req,res) => {
-    const clerUserId = req.auth.userId; 
-    const id = req.params.id;
+    const {userId} = req.auth();
+    const clerkUserId = userId; 
+    const id = req.params.Id;
+    console.log(id, "this is id for comment")
 
-    if(!clerUserId){
+    if(!clerkUserId){
         return res.status(401).json("Not authenticated!")
     }
 
-    const user = User.findOne({clerUserkId});
+
+    const role = req.auth.sessionClaims?.metadata?.role || "user";
+ 
+    if (role === "admin") {
+     await Comment.findByIdAndDelete (req.params.id);
+     return res.status(200).json("Comment has been deleted");
+    }
+
+
+
+    const user = await User.findOne({clerkUserId});
+    console.log(user._id, "this is user id for delete")
     const deleteComment = await Comment.findOneAndDelete ({
         _id:id, 
         user:user._id
     });
+
 
     if(!deleteComment) {  
     return res.status(403).json("you can deleted only your comment!")
