@@ -13,13 +13,72 @@ export const getPosts = async (req,res)=> {
 
   const page = parseInt (req.query.page) || 1;
   const limit = parseInt (req.query.limit) || 2;
+ 
 
-    const posts = await Post.find()
+  const query = {};
+  let sortObj = { createdAt: -1 };
+
+  console.log(req.query, "this is req query ")
+
+  const { cat, author, searchQuery, sortQuery,featured  } = req.query;
+  // const featured = req.query.featured;
+   
+  if (cat) {
+    query.category = cat;
+  }
+
+  if (searchQuery) {
+    query.title = { $regex: searchQuery, $options: "i"};
+  }
+
+  if (author) {
+    const user = await User.findOne({ username: author }).select("_id");
+
+    if (!user) {
+      return res.status(401).json("Not post found!");
+    }
+
+    query.user = user._id;
+
+     let sortObj = {createdAt : -1}
+
+  }
+
+  if (sortQuery) {
+    switch (sortQuery) {
+      case "newest":
+        sortObj = { createdAt: -1 };
+        break;
+      case "oldest":
+        sortObj = { createdAt: 1 };
+        break;
+      case "popular":
+        sortObj = { visit: -1 };
+        break;
+      case "trending":
+        sortObj = { visit: -1 };
+        query.createdAt = {
+          $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        };
+        break;
+      default:
+        break;
+    }
+  }
+
+
+  if (featured) {
+    query.isFeatured = true;
+  }
+
+
+    const posts = await Post.find(query)
     .populate("user", "username")
+    .sort(sortObj)
     .limit(limit)
     .skip((page - 1) * limit);
       
-    const totalPosts = await Post.countDocuments();
+    const totalPosts = await Post.countDocuments(query);
     const hasMore = (page * limit) < totalPosts;
 
     res.status(200).json({ posts,hasMore });
@@ -40,17 +99,17 @@ export const getPost = async (req,res)=> {
 
 export const createPost = async (req,res)=> {
     const {userId} = req.auth();
-    const clerkUserkId = userId;
-    console.log(clerkUserkId, "this is clerk user id")
+    const clerkUserId = userId;
+    console.log(clerkUserId, "this is clerk user id")
     console.log(userId, "user id")
    
   console.log(req.body, "thish is new post from body")
 
-    if (!clerkUserkId){
+    if (!clerkUserId){
         return res.status(401).json("not authenticated!")
     }
 
-    const user = await User.findOne ({clerkUserkId});
+    const user = await User.findOne ({clerkUserId});
 
     console.log(user, "this is user id")
 
@@ -79,7 +138,8 @@ export const createPost = async (req,res)=> {
 
 
 export const  deletePost = async (req,res)=> {
-  const clerkUserId = req.auth.userId;
+   const {userId} = req.auth();
+   const clerkUserId = userId ;
 
  const role = req.auth.sessionClaims?.metadata?.role || "user";
  
@@ -105,6 +165,48 @@ export const  deletePost = async (req,res)=> {
 
 
     res.status(200).json("Post has been deleted");
+};
+
+
+export const  featurePost = async (req,res)=> {
+  const {userId} = req.auth();
+  const {sessionClaims} = req.auth();
+  const  {metadate } = sessionClaims;
+  const role = metadate.role || "user"
+  console.log(metadate.role, "this is meta data")
+
+  console.log(sessionClaims, "this is session claims")
+  console.log(req.auth(), "this is req auth")
+  console.log(userId, "this is user id")
+  const clerkUserId = userId;
+  const postId = req.params.id;
+
+ 
+ 
+ if (role !== "admin") {
+  
+  return res.status(403).json("You cannot feature posts!");
+ }
+
+  if(!clerkUserId) {
+    return res.status(401).json("Not authenticated!");
+  }
+
+    const post = await Post.findById(postId)
+
+    if (!post) {
+      return res.status(404).json("post not found")
+    }
+
+    const isFeatured = post.isFeatured
+  
+     const updatedPost = await Post.findByIdAndUpdate (postId,{
+      isFeatured:!isFeatured,
+    },
+    {new:true}
+    );
+
+    res.status(200).json(updatedPost);
 };
 
 

@@ -57,74 +57,7 @@ const SinglePostPage = () => {
           <div className="flex flex-col md:flex-row gap-12">
             {/* text */}
             <div className="lg:text-lg flex flex-col gap-6 text-justify">
-              
-               
-              
-               
-                <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                </p>
-              
-                <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                </p>
-                  
-                <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                </p>
-              
-                <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                </p>
-                  
-                <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 
-                    suscipit quam vitae officia, quisquam enim. Debitis officiis 
-                    recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                     recusandae magnam architecto quasi, itaque voluptatem
-                     magni cum nam, maiores natus laudantium odio?
-                </p>
+
               
                 <p>
                     Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias 

@@ -12,6 +12,8 @@ const PostMenuActions = ({ post }) => {
   const { getToken } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isFeatured = post?.isFeatured ?? false;
+
   console.log(user, "this is user detail from clerk")
 
 
@@ -70,6 +72,39 @@ const PostMenuActions = ({ post }) => {
     },
   });
 
+  const togglefeatureMutation = useMutation({
+    mutationFn: async (shouldFeature) => {
+      const token = await getToken();
+      const url = `${import.meta.env.VITE_API_URL}/posts/feature/${post._id}`;
+  
+      return axios.patch(
+        url,
+        { shouldFeature }, // send value
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    },
+  
+    onSuccess: (_, shouldFeature) => {
+      queryClient.invalidateQueries(["posts"]);
+      toast.success(
+        shouldFeature ? "Post featured successfully!" : "Feature removed!"
+      );
+    },
+  
+    onError: (err) => {
+      const msg =
+        err?.response?.data?.message ??
+        err?.response?.data ??
+        err.message ??
+        "Something went wrong";
+      toast.error(msg);
+    },
+  });
+  
+
+
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async () => {
@@ -100,6 +135,13 @@ const PostMenuActions = ({ post }) => {
     deleteMutation.mutate();
   };
 
+  const handleToggleFeature = (shouldSave) => {
+    if (!window.confirm("Are you sure you want to continue?")) return;
+    togglefeatureMutation.mutate(shouldSave);
+  };
+  
+
+
   return (
     <div>
       <h1 className="mt-8 mb-4 text-sm font-medium">Actions</h1>
@@ -114,12 +156,25 @@ const PostMenuActions = ({ post }) => {
        
       </div>
     
-        {
-          isAdmin && <div className="flex items-center gap-2 py-1 text-sm cursor-pointer">
-            <FaStar className="w-6 h-10" />
-              <span>Feature this post </span>
-          </div>
-        }
+      {
+  isAdmin && (
+    <div
+      className="flex items-center gap-2 py-1 text-sm cursor-pointer"
+      onClick={() => handleToggleFeature(!isFeatured)} 
+    >
+      <FaStar className="w-6 h-10" />
+
+      <span>
+        {isFeatured ? "Remove feature" : "Feature this post"}
+      </span>
+
+      {togglefeatureMutation.isPending && (
+        <span className="text-xs">(processing...)</span>
+      )}
+    </div>
+  )
+}
+
   
 
     

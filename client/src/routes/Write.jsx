@@ -63,7 +63,7 @@ const Write = () => {
          
         onSuccess: (res) => {
           toast.success("Post has been created")
-          navigate("/my-story")   
+          navigate("/")   
         }
 
       });
