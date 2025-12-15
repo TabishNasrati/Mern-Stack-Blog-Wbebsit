@@ -1,4 +1,27 @@
 import User from "../models/user.model.js";   // این درست است، نه clerk-sdk-node
+//import Post from "../models/Post.js"; // if you want post details
+
+
+
+export const getSavedPosts = async (req, res) => {
+  try {
+    const clerkUserId = req.auth.userId; // Clerk user ID
+
+    if (!clerkUserId) return res.status(401).json({ message: "Not authenticated" });
+
+    const user = await User.findOne({ clerkUserId }).populate("savedPosts");
+
+    if (!user) return res.status(404).json({ savedPosts: [] });
+
+    const savedPosts = user.savedPosts.map(post => post._id); // or post object if you prefer
+
+    res.status(200).json({ savedPosts });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to load saved posts" });
+  }
+};
+
 
 export const getUserSavedPosts = async (req, res) => {
   const clerkUserId = req.auth.userId;
@@ -21,7 +44,7 @@ export const getUserSavedPosts = async (req, res) => {
 export const savePost = async (req, res) => {
     const {userId} = req.auth();
     console.log(userId, "this is user id")
-    const { postId } = req.params;   // ✔ از params گرفتیم
+    const { postId } = req.params;   
     console.log(postId, "this is post id")
     const clerkUserId = userId;
     console.log(clerkUserId, "this is clerk user id")

@@ -77,34 +77,37 @@ const Write = () => {
         return <div className="">You should login!</div>
     }
 
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target)
-        console.log(formData,"this post payload")
-
-       const data = {
-        img:cover.filePath || "",
-         title:formData.get("title"),
-         category:formData.get("category"),
-         desc:formData.get("desc"),
-         content:value,
-
-       };
- 
-       console.log(data)
-
-       mutation.mutate(data)
-
-
-      }; 
-
+    const handleSubmit = (e) => {
+      e.preventDefault();
+    
+      const formData = new FormData(e.target);
+    
      
-     
-      // const ouUploadProgress = ( progress ) => {
-      //   console.log(progress);
-      //   setProgress (Math.round(progress.loaded/progress.total) * 100);
-      // }
-     
+      if (!value || !value.trim()) {
+        toast.error("Content is required");
+        return;
+      }
+    
+      if (!formData.get("title") || !formData.get("desc")) {
+        toast.error("Title and description are required");
+        return;
+      }
+    
+      
+      const data = {
+        img: cover?.filePath || "",
+        title: formData.get("title"),
+        category: formData.get("category"),
+        desc: formData.get("desc"),
+        content: value,
+      };
+    
+      console.log("FINAL DATA 👉", data);
+    
+      mutation.mutate(data);
+    };
+    
+
    
     return (
         <div className="h-[calc(100vh-64px)]  md:h-[calc(100vh-80px)] flex flex-col gap-6">
@@ -113,7 +116,7 @@ const Write = () => {
 
                     <Upload type="image" setProgress={setProgress}  setData={setCover}>
 
-                <button className=" w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white">Add a cover image</button>
+                <button type="button" className=" w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white">Add a cover image</button>
 
                 </Upload>
                    
@@ -123,7 +126,7 @@ const Write = () => {
                     <label htmlFor="" className="text-sm">Choose a category </label>
                     <select name="category" id="" className="p-2 rounded-xl bg-white shadow-md">
                         <option value="general">General</option>
-                        <option value="web-design ">Web Design </option>
+                        <option value="web-design">Web Design</option>
                         <option value="development">Development</option>
                         <option value="databases">Databases</option>
                         <option value="seo">Search Engines</option>
@@ -136,8 +139,7 @@ const Write = () => {
                     <div className="flex flex-col gap-2 mr-2">
                          
                     <Upload type="image" setProgress={setProgress}  setData={setImg}>🌅</Upload>
-                      {/* <div className="cursor-pointer">🌅</div> */}
-                      {/* <div className="cursor-pointer">▶️</div> */}
+                   
                       <Upload type="video" setProgress={setProgress}  setData={setVideo}>▶️</Upload>
                     </div>
 

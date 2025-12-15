@@ -40,7 +40,7 @@ const PostList = () => {
       if (status === "error") return "Something went wrong!";
 
      const allPosts = data?.pages?.flatMap(page => page?.posts || []) || [];
-    //  const allPosts = data?.pages?.flatMap((page)  => page.posts ) || [];
+    
 
     
      
@@ -65,8 +65,8 @@ const PostList = () => {
       
         {allPosts.map(post =>( 
                 <PostListitem key={post._id} post={post} />
-            // <PostListitem  key={post._id} post={post} />
-            ))}; 
+            
+            ))}
     </InfiniteScroll>    
     );
  };

@@ -127,7 +127,7 @@ const Comments = ({postId}) => {
            
            </>
            
-              };
+              }
         </div>
         );
       };

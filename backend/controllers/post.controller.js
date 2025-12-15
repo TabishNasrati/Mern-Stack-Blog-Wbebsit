@@ -97,41 +97,62 @@ export const getPost = async (req,res)=> {
 
 
 
-export const createPost = async (req,res)=> {
-    const {userId} = req.auth();
-    const clerkUserId = userId;
-    console.log(clerkUserId, "this is clerk user id")
-    console.log(userId, "user id")
-   
-  console.log(req.body, "thish is new post from body")
 
-    if (!clerkUserId){
-        return res.status(401).json("not authenticated!")
+export const createPost = async (req, res) => {
+  try {
+    
+    const { userId } = req.auth?.() || {};
+
+    console.log("CLERK USER ID 👉", userId);
+    console.log("BODY 👉", req.body);
+
+    if (!userId) {
+      return res.status(401).json("Not authenticated");
     }
 
-    const user = await User.findOne ({clerkUserId});
+   
+    if (!req.body.title || !req.body.desc || !req.body.content) {
+      return res.status(400).json("Missing required fields");
+    }
 
-    console.log(user, "this is user id")
+    
+    const user = await User.findOne({ clerkUserId: userId });
 
     if (!user) {
-        return res.status(404).json("User not found!")
+      return res.status(404).json("User not found");
     }
 
-    let slug = req.body.title.replace(/ /g ,"-").toLowerCase();
+   
+    let slug = req.body.title
+      .trim()
+      .replace(/\s+/g, "-")
+      .toLowerCase();
 
-    let existingPost = await Post.findOne ({ slug });
-
+    let existingPost = await Post.findOne({ slug });
     let counter = 2;
 
     while (existingPost) {
-        slug = `${slug}-${counter}`;
-        existingPost =  await Post.findOne ({ slug }) ;
-        counter++;
+      slug = `${slug}-${counter}`;
+      existingPost = await Post.findOne({ slug });
+      counter++;
     }
 
-    const newPost = new Post ({ slug, user: user, ...req.body});
+    
+    const newPost = new Post({
+      slug,
+      user: user._id,
+      ...req.body,
+    });
+
     const post = await newPost.save();
-    res.status(200).json(post);
+    res.status(201).json(post);
+
+  } catch (err) {
+    console.error("CREATE POST ERROR ", err);
+    res.status(500).json({
+      message: err.message,
+    });
+  }
 };
 
 
